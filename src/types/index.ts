@@ -1,0 +1,30 @@
+export interface PassDetails {
+  id: string;
+  driver: string;
+  stockistCode: string;
+  dcPassNo: string;
+  passIssuedOn: string;
+  vehicleNo: string;
+  carrierType: string;
+  mineralName: string;
+  grade: string;
+  netWeight: string;
+  concessionHolderName: string;
+  sourceOfPlace: string;
+  nameOfPurchaser: string;
+  destinationAddress: string;
+  distanceInKm: string;
+  journeyStartDate: string;
+  journeyEndDate: string;
+  expectedJourneyRoute: string;
+  journeyDuration: string;
+  nameOfCheckPost: string;
+  driverName: string;
+  driverLicenceNo: string;
+  driverMobileNumber: string;
+  panNumberGstin: string;
+  electronicDeviceDetails: string;
+  transporterName: string;
+  buyerMobileNumber: string;
+  logoDataUrl?: string;
+}
