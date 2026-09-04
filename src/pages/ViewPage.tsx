@@ -59,7 +59,7 @@ export const ViewPage: React.FC = () => {
       const opt = {
         margin: 0,
         filename: `DC_Pass_${passData?.dcPassNo || passData?.id || 'download'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { 
           scale: 2, 
           useCORS: true, 
@@ -74,7 +74,7 @@ export const ViewPage: React.FC = () => {
             });
           }
         },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
       };
       
       try {
