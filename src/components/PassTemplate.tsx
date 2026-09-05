@@ -87,9 +87,9 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
     <div 
       id="pass-template-container"
       style={{
-        width: '762px',
-        minWidth: '762px',
-        maxWidth: '762px',
+        width: '700px',
+        minWidth: '700px',
+        maxWidth: '700x',
         backgroundColor: '#ffffff',
         color: '#000000',
         padding: '0',
@@ -103,7 +103,7 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
       {/* Outer Border Box enclosing all sections */}
       <div 
         style={{ 
-          width: '762px', 
+          width: '690px', 
           border: '2px solid #000000', 
           display: 'flex',
           flexDirection: 'column',
