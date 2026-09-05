@@ -66,7 +66,7 @@ export const ViewPage: React.FC = () => {
     setDownloading(true);
 
     const opt = {
-      margin: [6, 4.2, 6, 4.2], // 4.2mm left/right margin + 201.6mm table = 210mm A4 width
+      margin: [6, 4.2, 6, 4.2] as [number, number, number, number], // 4.2mm left/right margin + 201.6mm table = 210mm A4 width
       filename: `DC_Pass_${passData?.dcPassNo || passData?.id || 'download'}.pdf`,
       image: { type: 'png' as const },
       html2canvas: { 
