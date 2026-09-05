@@ -66,26 +66,43 @@ export const ViewPage: React.FC = () => {
     setDownloading(true);
 
     const opt = {
-      margin: 0,
+      margin: [6, 4.2, 6, 4.2], // 4.2mm left/right margin + 201.6mm table = 210mm A4 width
       filename: `DC_Pass_${passData?.dcPassNo || passData?.id || 'download'}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
+      image: { type: 'png' as const },
       html2canvas: { 
         scale: 2, 
         useCORS: true, 
         logging: false,
         scrollY: 0,
         scrollX: 0,
-        width: 794,
-        windowWidth: 1200,
+        width: 762,
+        windowWidth: 762,
         backgroundColor: '#ffffff',
         onclone: (clonedDoc: Document) => {
-          // Lock the cloned element width to exactly 794px regardless of client device resolution
+          // Lock cloned document and body to exact 762px centered
+          clonedDoc.documentElement.style.width = '762px';
+          clonedDoc.documentElement.style.margin = '0 auto';
+          clonedDoc.body.style.width = '762px';
+          clonedDoc.body.style.margin = '0 auto';
+          clonedDoc.body.style.padding = '0';
+
+          const wrapper = clonedDoc.getElementById('printable-pdf-wrapper');
+          if (wrapper) {
+            wrapper.style.width = '762px';
+            wrapper.style.minWidth = '762px';
+            wrapper.style.maxWidth = '762px';
+            wrapper.style.margin = '0 auto';
+            wrapper.style.padding = '0';
+          }
+
           const el = clonedDoc.getElementById('pass-template-container');
           if (el) {
-            el.style.width = '794px';
-            el.style.minWidth = '794px';
-            el.style.maxWidth = '794px';
+            el.style.width = '762px';
+            el.style.minWidth = '762px';
+            el.style.maxWidth = '762px';
             el.style.margin = '0 auto';
+            el.style.padding = '0';
+            el.style.boxSizing = 'border-box';
           }
           // Strip any modern oklch() color functions from CSS style tags so html2canvas doesn't crash
           const styleElements = clonedDoc.querySelectorAll('style');
@@ -193,15 +210,15 @@ export const ViewPage: React.FC = () => {
       </div>
       
       {/* 
-        Scrollable container so mobile screens won't compress the 794px layout.
+        Scrollable container so mobile screens won't compress the layout.
         html2canvas will capture the exact uncompressed desktop layout matching the preview.
       */}
-      <div className="w-full overflow-x-auto flex justify-center pb-8 print:p-0 print:overflow-visible">
+      <div className="w-full overflow-x-auto flex justify-center pb-8 print:p-0 print:m-0 print:overflow-visible print:block print:w-full">
         <div 
-          className="bg-white shadow-2xl rounded-sm print:shadow-none print:m-0"
-          style={{ width: '794px', minWidth: '794px' }}
+          className="bg-white shadow-2xl rounded-sm print:shadow-none print:mx-auto"
+          style={{ width: '762px', marginLeft: 'auto', marginRight: 'auto' }}
         >
-          <div ref={pdfRef} id="printable-pdf-wrapper">
+          <div ref={pdfRef} id="printable-pdf-wrapper" style={{ width: '762px', marginLeft: 'auto', marginRight: 'auto' }}>
             <PassTemplate data={passData} viewUrl={viewUrl} />
           </div>
         </div>

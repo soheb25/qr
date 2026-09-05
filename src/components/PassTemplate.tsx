@@ -87,12 +87,12 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
     <div 
       id="pass-template-container"
       style={{
-        width: '794px',
-        minWidth: '794px',
-        maxWidth: '794px',
+        width: '762px',
+        minWidth: '762px',
+        maxWidth: '762px',
         backgroundColor: '#ffffff',
         color: '#000000',
-        padding: '16px',
+        padding: '0',
         boxSizing: 'border-box',
         margin: '0 auto',
         fontFamily: "Arial, 'Helvetica Neue', Helvetica, sans-serif",
@@ -104,11 +104,12 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
       <div 
         style={{ 
           width: '762px', 
-          border: '1.5px solid #000000', 
+          border: '2px solid #000000', 
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',
-          backgroundColor: '#ffffff'
+          backgroundColor: '#ffffff',
+          overflow: 'hidden'
         }}
       >
         {/* ========================================================================= */}
@@ -132,21 +133,21 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
               flexDirection: 'column'
             }}
           >
-            {/* Header Row: Logo (226px) + Department Titles (246px) */}
+            {/* Header Row: Logo (88px, moved left) + Department Titles (384px) */}
             <div 
               style={{ 
                 display: 'flex', 
-                borderBottom: '1px solid #000000',
+                borderBottom: '1.5px solid #000000',
                 boxSizing: 'border-box',
                 height: '76px'
               }}
             >
-              {/* Column 1: Fixed Official CGM Gujarat Logo */}
+              {/* Column 1: Official CGM Gujarat Logo (compact square framing emblem) */}
               <div 
                 style={{ 
-                  width: '226px', 
+                  width: '88px', 
                   flexShrink: 0,
-                  borderRight: '1px solid #000000', 
+                  borderRight: '1.5px solid #000000', 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
@@ -162,7 +163,7 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
                 />
               </div>
 
-              {/* Column 2: Cyan Banner + Department Titles */}
+              {/* Column 2: Cyan Banner + Department Titles (expanded width) */}
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                 {/* Cyan Header Banner */}
                 <div 
@@ -175,7 +176,7 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
                     justifyContent: 'center', 
                     fontWeight: 'bold', 
                     fontSize: '11.5px', 
-                    borderBottom: '1px solid #000000',
+                    borderBottom: '1.5px solid #000000',
                     boxSizing: 'border-box'
                   }}
                 >
@@ -214,17 +215,17 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
                 style={{ 
                   display: 'flex', 
                   width: '100%',
-                  borderBottom: idx === section1Rows.length - 1 ? 'none' : '1px solid #000000',
+                  borderBottom: idx === section1Rows.length - 1 ? 'none' : '1.5px solid #000000',
                   boxSizing: 'border-box',
                   minHeight: row.isQr ? '112px' : '20px'
                 }}
               >
-                {/* Row Label (Column 1: 226px) */}
+                {/* Row Label (Column 1: 215px) */}
                 <div 
                   style={{ 
-                    width: '226px', 
+                    width: '215px', 
                     flexShrink: 0,
-                    borderRight: '1px solid #000000', 
+                    borderRight: '1.5px solid #000000', 
                     padding: '2.5px 6px', 
                     fontWeight: 'bold', 
                     fontSize: '9.5px', 
@@ -238,7 +239,7 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
                   {row.label}
                 </div>
 
-                {/* Row Value (Column 2: 246px) */}
+                {/* Row Value (Column 2) */}
                 <div 
                   style={{ 
                     flex: 1,
@@ -258,10 +259,10 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
             ))}
           </div>
 
-          {/* Section 1 Right: Column 3 Instructions (290px) */}
+          {/* Section 1 Right: Instructions (flex: 1 prevents overflowing outer border) */}
           <div 
             style={{ 
-              width: '290px', 
+              flex: 1, 
               boxSizing: 'border-box',
               display: 'flex', 
               flexDirection: 'column', 
@@ -273,7 +274,7 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
               style={{ 
                 height: '25px', 
                 backgroundColor: '#ffffff', 
-                borderBottom: '1px solid #000000', 
+                borderBottom: '1.5px solid #000000', 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
@@ -341,8 +342,8 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
         </div>
 
         {/* ========================================================================= */}
-        {/* SECTION 2: Rows 22 to 25 + Digital Signature Box                         */}
-        {/* Note: Divided from Section 1 by the continuous horizontal line at Row 22  */}
+        {/* SECTION 2: Rows 22 to 25 & Footer (Left) + Digital Signature & QR (Right) */}
+        {/* Note: Vertical divider stops at Row 25; NO line between Signature and QR!  */}
         {/* ========================================================================= */}
         <div 
           style={{ 
@@ -351,143 +352,143 @@ export const PassTemplate: React.FC<Props> = ({ data, viewUrl }) => {
             boxSizing: 'border-box'
           }}
         >
-          {/* Section 2 Left: Rows 22 to 25 (472px) */}
+          {/* Section 2 Left: Rows 22 to 25 + Blank Footer Area (472px) */}
           <div 
             style={{ 
               width: '472px', 
-              borderRight: '1.5px solid #000000', 
               boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column'
             }}
           >
-            {section2Rows.map((row, idx) => (
-              <div 
-                key={idx}
-                style={{ 
-                  display: 'flex', 
-                  width: '100%',
-                  borderBottom: '1px solid #000000',
-                  boxSizing: 'border-box',
-                  minHeight: '20px'
-                }}
-              >
-                {/* Row Label (Column 1: 226px) */}
+            {/* Rows 22 to 25 wrapper: Vertical border ends at the bottom of Row 25 */}
+            <div 
+              style={{ 
+                width: '100%', 
+                borderRight: '1.5px solid #000000', 
+                borderBottom: '1.5px solid #000000',
+                boxSizing: 'border-box',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              {section2Rows.map((row, idx) => (
                 <div 
+                  key={idx}
                   style={{ 
-                    width: '226px', 
-                    flexShrink: 0,
-                    borderRight: '1px solid #000000', 
-                    padding: '2.5px 6px', 
-                    fontWeight: 'bold', 
-                    fontSize: '9.5px', 
                     display: 'flex', 
-                    alignItems: 'center', 
-                    color: '#000000',
-                    lineHeight: '1.25',
-                    boxSizing: 'border-box'
+                    width: '100%',
+                    borderBottom: idx === section2Rows.length - 1 ? 'none' : '1.5px solid #000000',
+                    boxSizing: 'border-box',
+                    minHeight: '20px'
                   }}
                 >
-                  {row.label}
-                </div>
+                  {/* Row Label (Column 1: 215px) */}
+                  <div 
+                    style={{ 
+                      width: '215px', 
+                      flexShrink: 0,
+                      borderRight: '1.5px solid #000000', 
+                      padding: '2.5px 6px', 
+                      fontWeight: 'bold', 
+                      fontSize: '9.5px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      color: '#000000',
+                      lineHeight: '1.25',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    {row.label}
+                  </div>
 
-                {/* Row Value (Column 2: 246px) */}
-                <div 
-                  style={{ 
-                    flex: 1,
-                    padding: '2.5px 6px', 
-                    fontSize: '9.5px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    color: '#000000', 
-                    wordBreak: 'break-word',
-                    lineHeight: '1.25',
-                    boxSizing: 'border-box'
-                  }}
-                >
-                  {row.value}
+                  {/* Row Value (Column 2) */}
+                  <div 
+                    style={{ 
+                      flex: 1,
+                      padding: '2.5px 6px', 
+                      fontSize: '9.5px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      color: '#000000', 
+                      wordBreak: 'break-word',
+                      lineHeight: '1.25',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    {row.value}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Left blank footer area below Row 25: NO borderRight (vertical line has ended!) */}
+            <div style={{ flex: 1, minHeight: '66px', backgroundColor: '#ffffff', boxSizing: 'border-box' }} />
           </div>
 
-          {/* Section 2 Right: Digital Signature Box (290px) */}
+          {/* Section 2 Right: Digital Signature + Officer QR Code (flex: 1, NO LINE BETWEEN THEM) */}
           <div 
             style={{ 
-              width: '290px', 
-              padding: '6px 8px', 
+              flex: 1, 
+              padding: '6px 8px 6px 8px', 
               boxSizing: 'border-box',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center'
+              justifyContent: 'space-between',
+              backgroundColor: '#ffffff'
             }}
           >
-            <div style={{ fontWeight: 'bold', fontSize: '11px', color: '#000000', marginBottom: '4px' }}>
-              Signature Not Verified
-            </div>
-            
-            {/* Yellow Acrobat-style question mark badge + Signer details */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div 
-                style={{ 
-                  width: '24px', 
-                  height: '32px', 
-                  border: '2px solid #ca8a04', 
-                  backgroundColor: '#fef08a', 
-                  borderRadius: '2px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}
-              >
-                <span style={{ fontSize: '20px', fontWeight: '900', color: '#ca8a04', lineHeight: 1 }}>
-                  ?
-                </span>
+            {/* Top: Digital Signature Details */}
+            <div>
+              <div style={{ fontWeight: 'bold', fontSize: '11px', color: '#000000', marginBottom: '4px' }}>
+                Signature Not Verified
               </div>
               
-              <div style={{ fontSize: '9px', lineHeight: '1.25', color: '#000000' }}>
-                <div>Digitally Signed by : </div>
-                <div style={{ fontWeight: 'bold' }}>
-                  District Geologist , {getDistrict(data.sourceOfPlace)}
+              {/* Yellow Acrobat-style question mark badge + Signer details */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div 
+                  style={{ 
+                    width: '24px', 
+                    height: '32px', 
+                    border: '2px solid #ca8a04', 
+                    backgroundColor: '#fef08a', 
+                    borderRadius: '2px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <span style={{ fontSize: '20px', fontWeight: '900', color: '#ca8a04', lineHeight: 1 }}>
+                    ?
+                  </span>
                 </div>
-                <div>{getSignatureDate(data.passIssuedOn)}</div>
+                
+                <div style={{ fontSize: '9px', lineHeight: '1.25', color: '#000000' }}>
+                  <div>Digitally Signed by : </div>
+                  <div style={{ fontWeight: 'bold' }}>
+                    District Geologist , {getDistrict(data.sourceOfPlace)}
+                  </div>
+                  <div>{getSignatureDate(data.passIssuedOn)}</div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* ========================================================================= */}
-        {/* SECTION 3: Bottom Footer (Below Row 25)                                  */}
-        {/* Note: Vertical divider terminates above; full width footer               */}
-        {/* ========================================================================= */}
-        <div 
-          style={{ 
-            display: 'flex', 
-            width: '100%', 
-            minHeight: '76px',
-            backgroundColor: '#ffffff',
-            boxSizing: 'border-box'
-          }}
-        >
-          {/* Left blank footer area (472px) */}
-          <div style={{ width: '472px', boxSizing: 'border-box' }} />
-
-          {/* Right footer area with Officer QR code (290px) */}
-          <div 
-            style={{ 
-              width: '290px', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              padding: '6px 0',
-              boxSizing: 'border-box'
-            }}
-          >
-            <QRCodeSVG value={viewUrl} size={46} />
-            <div style={{ fontSize: '7.5px', marginTop: '3px', textAlign: 'center', fontWeight: '500', color: '#374151' }}>
-              For GeoMine Application users (CGM Officers) only
+            {/* Bottom: Officer QR Code (NO horizontal line above it!) */}
+            <div 
+              style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                paddingTop: '6px',
+                boxSizing: 'border-box'
+              }}
+            >
+              <QRCodeSVG value={viewUrl} size={46} />
+              <div style={{ fontSize: '7.5px', marginTop: '3px', textAlign: 'center', fontWeight: '500', color: '#374151' }}>
+                For GeoMine Application users (CGM Officers) only
+              </div>
             </div>
           </div>
         </div>
