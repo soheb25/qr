@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { PassDetails } from '../types';
 import { PassTemplate } from '../components/PassTemplate';
-import { Download, ArrowLeft } from 'lucide-react';
-
+import { Download, ArrowLeft, Printer, LogOut } from 'lucide-react';
+import { authService } from '../utils/auth';
 import { supabase, isSupabaseConfigured } from '../supabase';
 
 // @ts-ignore
@@ -14,7 +14,9 @@ export const ViewPage: React.FC = () => {
   const navigate = useNavigate();
   const [passData, setPassData] = useState<PassDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [downloading, setDownloading] = useState<boolean>(false);
   const pdfRef = useRef<HTMLDivElement>(null);
+  const isAuthenticated = authService.isAuthenticated();
 
   useEffect(() => {
     const fetchPass = async () => {
@@ -54,44 +56,60 @@ export const ViewPage: React.FC = () => {
     fetchPass();
   }, [id]);
 
-  const handleDownload = () => {
-    if (pdfRef.current) {
-      const opt = {
-        margin: 0,
-        filename: `DC_Pass_${passData?.dcPassNo || passData?.id || 'download'}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          logging: false,
-          onclone: (clonedDoc: Document) => {
-            // Strip any modern oklch() color functions from CSS style tags so html2canvas doesn't crash
-            const styleElements = clonedDoc.querySelectorAll('style');
-            styleElements.forEach((style) => {
-              if (style.innerHTML && style.innerHTML.includes('oklch')) {
-                style.innerHTML = style.innerHTML.replace(/oklch\([^)]+\)/g, '#000000');
-              }
-            });
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+  };
+
+  const handleDownload = async () => {
+    if (!pdfRef.current) return;
+    setDownloading(true);
+
+    const opt = {
+      margin: 0,
+      filename: `DC_Pass_${passData?.dcPassNo || passData?.id || 'download'}.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: { 
+        scale: 2, 
+        useCORS: true, 
+        logging: false,
+        scrollY: 0,
+        scrollX: 0,
+        width: 794,
+        windowWidth: 1200,
+        backgroundColor: '#ffffff',
+        onclone: (clonedDoc: Document) => {
+          // Lock the cloned element width to exactly 794px regardless of client device resolution
+          const el = clonedDoc.getElementById('pass-template-container');
+          if (el) {
+            el.style.width = '794px';
+            el.style.minWidth = '794px';
+            el.style.maxWidth = '794px';
+            el.style.margin = '0 auto';
           }
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      };
-      
-      try {
-        html2pdf()
-          .set(opt)
-          .from(pdfRef.current)
-          .save()
-          .catch((err: any) => {
-            console.warn('html2pdf download failed, falling back to browser print dialog:', err);
-            window.print();
+          // Strip any modern oklch() color functions from CSS style tags so html2canvas doesn't crash
+          const styleElements = clonedDoc.querySelectorAll('style');
+          styleElements.forEach((style) => {
+            if (style.innerHTML && style.innerHTML.includes('oklch')) {
+              style.innerHTML = style.innerHTML.replace(/oklch\([^)]+\)/g, '#000000');
+            }
           });
-      } catch (err) {
-        console.warn('html2pdf initialization failed, printing instead:', err);
-        window.print();
-      }
-    } else {
+        }
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+    
+    try {
+      await html2pdf()
+        .set(opt)
+        .from(pdfRef.current)
+        .save();
+    } catch (err) {
+      console.warn('html2pdf download failed, falling back to browser print dialog:', err);
       window.print();
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -114,7 +132,7 @@ export const ViewPage: React.FC = () => {
           <p className="text-slate-400">The requested pass could not be found or has been deleted.</p>
           <button 
             onClick={() => navigate('/')}
-            className="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-colors"
+            className="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-500 transition-colors cursor-pointer font-medium"
           >
             Go Back
           </button>
@@ -127,29 +145,65 @@ export const ViewPage: React.FC = () => {
   const viewUrl = window.location.href;
 
   return (
-    <div className="min-h-screen bg-slate-200 py-8 px-4 print:bg-white print:py-0 print:px-0">
-      <div className="max-w-[210mm] mx-auto mb-6 flex justify-between items-center print:hidden">
+    <div className="min-h-screen bg-slate-200 py-6 px-2 sm:px-4 print:bg-white print:py-0 print:px-0">
+      {/* Top action toolbar */}
+      <div className="max-w-[794px] mx-auto mb-5 flex flex-wrap justify-between items-center gap-3 print:hidden">
         <button 
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg shadow hover:bg-slate-50 transition-colors font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 rounded-lg shadow hover:bg-slate-50 transition-colors font-medium cursor-pointer text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Form
         </button>
         
-        <button 
-          onClick={handleDownload}
-          className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-500 transition-colors font-bold"
-        >
-          <Download className="w-4 h-4" />
-          Download PDF
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button 
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg shadow hover:bg-slate-600 transition-colors font-medium cursor-pointer text-sm"
+            title="Open browser print dialog to print or save high-resolution vector PDF"
+          >
+            <Printer className="w-4 h-4" />
+            Print Pass
+          </button>
+          
+          <button 
+            onClick={handleDownload}
+            disabled={downloading}
+            className="flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-500 transition-colors font-bold cursor-pointer text-sm disabled:opacity-50"
+          >
+            {downloading ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            <span>{downloading ? 'Generating...' : 'Download PDF'}</span>
+          </button>
+
+          {isAuthenticated && (
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition-colors font-medium cursor-pointer text-sm"
+              title="Sign out"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          )}
+        </div>
       </div>
       
-      {/* Container with shadow for the PDF preview */}
-      <div className="max-w-[210mm] mx-auto bg-white shadow-2xl rounded-sm overflow-hidden print:shadow-none print:m-0">
-        <div ref={pdfRef}>
-          <PassTemplate data={passData} viewUrl={viewUrl} />
+      {/* 
+        Scrollable container so mobile screens won't compress the 794px layout.
+        html2canvas will capture the exact uncompressed desktop layout matching the preview.
+      */}
+      <div className="w-full overflow-x-auto flex justify-center pb-8 print:p-0 print:overflow-visible">
+        <div 
+          className="bg-white shadow-2xl rounded-sm print:shadow-none print:m-0"
+          style={{ width: '794px', minWidth: '794px' }}
+        >
+          <div ref={pdfRef} id="printable-pdf-wrapper">
+            <PassTemplate data={passData} viewUrl={viewUrl} />
+          </div>
         </div>
       </div>
     </div>
